@@ -152,8 +152,11 @@
       }
       .control-set {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 60px);
+        grid-template-rows: repeat(3, 60px);
         gap: 5px;
+        justify-items: center;
+        align-items: center;
       }
       .btn {
         padding: 15px;
@@ -200,10 +203,15 @@
     </div>
     <div id="controls">
       <div class="control-set">
+        <div></div>
         <button class="btn" onclick="setDir1(0, -1)">⬆️</button>
+        <div></div>
         <button class="btn" onclick="setDir1(-1, 0)">⬅️</button>
+        <div></div>
         <button class="btn" onclick="setDir1(1, 0)">➡️</button>
+        <div></div>
         <button class="btn" onclick="setDir1(0, 1)">⬇️</button>
+        <div></div>
       </div>
     </div>
     <div id="gameOverMessage">Game Over</div>
