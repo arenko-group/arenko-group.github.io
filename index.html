@@ -450,6 +450,7 @@
           <!-- Populated by JS -->
         </ol>
         <button onclick="restartGame()">Play Again</button>
+        <button onclick="newPlayer()">New Player</button>
       </div>
     </div>
 
@@ -521,7 +522,7 @@
       }
 
 
-      // Render top 3 players
+      // Render top 10 players
       function updateLeaderboardDisplay() {
         const list = document.getElementById("leaderboard-list");
         list.innerHTML = "";
@@ -731,13 +732,19 @@
           }
         }
       }
+
       function setDir1(dx, dy) {
         pacman1.dx = dx;
         pacman1.dy = dy;
       }
+
       function restartGame() {
         document.getElementById("leaderboard-overlay").style.display = "none";
         document.getElementById("gameOverMessage").style.display = "none";
+
+        // stop residual shaking
+        document.body.classList.remove("shaking", "dimmed", "brightened", "standard");
+
         pacman1 = { x: 1, y: 1, dx: 0, dy: 0, score: 0, alive: true };
         frequency = 50.0;
         tickCount = 0;
@@ -749,6 +756,34 @@
         setTimeout(() => {
           loop = setInterval(update, intervalDelay); // ⏯ Start game after READY/GO
         }, 2000); // match duration of READY/GO flash
+      }
+
+      function newPlayer() {
+        // Hide leaderboard and game over message
+        document.getElementById("leaderboard-overlay").style.display = "none";
+        document.getElementById("gameOverMessage").style.display = "none";
+        
+        // stop residual shaking
+        document.body.classList.remove("shaking", "dimmed", "brightened", "standard");
+
+        // Reset name input
+        document.getElementById("playerName").value = "";
+
+        // Show the start screen overlay again
+        const startScreen = document.getElementById("start-screen-overlay");
+        startScreen.classList.remove("fade-out"); // Reset any fade-out effect
+        startScreen.style.display = "flex";
+
+        // Reset game state
+        pacman1 = { x: 1, y: 1, dx: 0, dy: 0, score: 0, alive: true };
+        frequency = 50.0;
+        tickCount = 0;
+        intervalDelay = 200;
+        clearInterval(loop);
+        generateMap();
+        drawMap();
+
+        playerName = "";
       }
 
       document.addEventListener("keydown", (e) => {
