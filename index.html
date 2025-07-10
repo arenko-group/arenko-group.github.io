@@ -49,31 +49,31 @@
 
       /* Top border */
       .wall.top {
-        border-top: 2px solid #6f9dba;
-        box-shadow: 0 -2px 8px 0 #6f9dba, 0 -2px 16px 0 #00ffe7;
+        border-top: 2px solid #00ffe7;
+        box-shadow: 0 -2px 8px 0 #00ffe7, 0 -2px 16px 0 #00ffe7;
       }
 
       /* Bottom border */
       .wall.bottom {
-        border-bottom: 2px solid #6f9dba;
-        box-shadow: 0 2px 8px 0 #6f9dba, 0 2px 16px 0 #00ffe7;
+        border-bottom: 2px solid #00ffe7;
+        box-shadow: 0 2px 8px 0 #00ffe7, 0 2px 16px 0 #00ffe7;
       }
 
       /* Left border */
       .wall.left {
-        border-left: 2px solid #6f9dba;
-        box-shadow: -2px 0 8px 0 #6f9dba, -2px 0 16px 0 #00ffe7;
+        border-left: 2px solid #00ffe7;
+        box-shadow: -2px 0 8px 0 #00ffe7, -2px 0 16px 0 #00ffe7;
       }
 
       /* Right border */
       .wall.right {
-        border-right: 2px solid #6f9dba;
-        box-shadow: 2px 0 8px 0 #6f9dba, 2px 0 16px 0 #00ffe7;
+        border-right: 2px solid #00ffe7;
+        box-shadow: 2px 0 8px 0 #00ffe7, 2px 0 16px 0 #00ffe7;
       }
 
       @keyframes wall-glow {
         0% {
-          filter: brightness(1.1) drop-shadow(0 0 4px #6f9dba);
+          filter: brightness(1.1) drop-shadow(0 0 4px #00ffe7);
         }
         100% {
           filter: brightness(1.5) drop-shadow(0 0 12px #00ffe7);
@@ -147,9 +147,181 @@
       #frequency span {
         font-weight: bold;
       }
+      #start-screen-overlay {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: #000;
+        z-index: 999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: flicker 2s linear, retroFadeIn 1.2s ease-out;
+      }
+
+      #start-screen {
+        display: flex;
+        width: 80%;
+        max-width: 900px;
+        background: #111;
+        border: 2px solid #00ffe7;
+        border-radius: 10px;
+        padding: 40px;
+        color: #00ffe7;
+        font-family: 'Courier New', Courier, monospace;
+        box-shadow: 0 0 12px #00ffe7, 0 0 20px #00ffe7;
+        animation: glowPulse 2s infinite alternate;
+      }
+
+      .left-column, .right-column {
+        flex: 1;
+        padding: 20px;
+      }
+
+      .left-column input,
+      .left-column button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 10px;
+        background: #000;
+        color: #00ffe7;
+        border: 2px solid #00ffe7;
+        font-size: 16px;
+        font-family: inherit;
+      }
+
+      .left-column button {
+        cursor: pointer;
+        transition: 0.3s ease;
+      }
+
+      .left-column button:hover {
+        background: #00ffe7;
+        color: #000;
+      }
+
+      .right-column ul {
+        list-style-type: square;
+        padding-left: 20px;
+        text-align: left;
+        color: #fff;
+      }
+
+      @keyframes retroFadeIn {
+        0% {
+          opacity: 0;
+          transform: scale(0.8);
+          filter: brightness(0.4) contrast(1.5);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+          filter: brightness(1) contrast(1);
+        }
+      }
+
+      @keyframes glowPulse {
+        0% {
+          box-shadow: 0 0 10px #00ffe7, 0 0 20px #00ffe7;
+        }
+        100% {
+          box-shadow: 0 0 20px #00ffe7, 0 0 30px #00ffe7;
+        }
+      }
+
+      @keyframes flicker {
+        0%, 18%, 22%, 25%, 53%, 57%, 100% {
+          opacity: 1;
+        }
+        19%, 21%, 24%, 56% {
+          opacity: 0.6;
+        }
+      }
+
+      .fade-out {
+        animation: fadeOut 0.6s ease forwards;
+      }
+
+      @keyframes fadeOut {
+        0% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(0.95);
+          pointer-events: none;
+        }
+      }
+
+      #ready-go-overlay {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 48px;
+        font-weight: bold;
+        color: #00ffe7;
+        text-shadow: 0 0 10px #00ffe7;
+        pointer-events: none;
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.2s ease-in-out;
+      }
+
+      #ready-text, #go-text {
+        opacity: 0;
+        animation-duration: 0.6s;
+        animation-fill-mode: forwards;
+      }
+
+      @keyframes showReady {
+        0% { opacity: 0; transform: scale(0.8); }
+        50% { opacity: 1; transform: scale(1.1); }
+        100% { opacity: 0; transform: scale(1); }
+      }
+
+      @keyframes showGo {
+        0% { opacity: 0; transform: scale(0.8); }
+        50% { opacity: 1; transform: scale(1.1); }
+        100% { opacity: 0; transform: scale(1); }
+      }
+
+
     </style>
   </head>
   <body>
+    <div id="start-screen-overlay">
+      <div id="start-screen">
+        <div class="left-column">
+          <form id="start-form" onsubmit="return startGame(event)">
+            <h2>Enter Your Name</h2>
+            <input type="text" id="playerName" name="playerName" required autocomplete="off" />
+            <button type="submit">Start Game</button>
+          </form>
+        </div>
+        <div class="right-column">
+          <h2>How to Play</h2>
+          <ul>
+            <li>🎯 Collect <strong>+</strong> to increase frequency and score.</li>
+            <li>⚠️ Avoid <strong>−</strong>, it lowers frequency.</li>
+            <li>🎮 Use arrow keys or buttons to move Pac-Man.</li>
+            <li>🏁 Game ends when all items are collected.</li>
+            <li>📈 Stay close to 50.0Hz for best score!</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div id="ready-go-overlay">
+      <div id="ready-text">READY...</div>
+      <div id="go-text">GO!</div>
+    </div>
+
+
     <h1>Grid Frequency Game</h1>
     <div id="scoreboard">
       <div class="score" id="score1">Score: 0</div>
@@ -188,6 +360,41 @@
           }),
         );
         map[pacman1.y][pacman1.x] = 2;
+      }
+
+      function startGame(e) {
+        e.preventDefault();
+        const name = document.getElementById("playerName").value.trim();
+        if (!name) return;
+
+        const overlay = document.getElementById("start-screen-overlay");
+        overlay.classList.add("fade-out");
+
+        setTimeout(() => {
+          overlay.style.display = "none";
+          showReadyGoFlash(); // Trigger READY/GO!
+        }, 600);
+
+        return false;
+      }
+
+      function showReadyGoFlash() {
+        const overlay = document.getElementById("ready-go-overlay");
+        const ready = document.getElementById("ready-text");
+        const go = document.getElementById("go-text");
+
+        overlay.style.opacity = 1;
+
+        ready.style.animation = "showReady 1s ease-out";
+        setTimeout(() => {
+          go.style.animation = "showGo 1s ease-out";
+        }, 1000);
+
+        setTimeout(() => {
+          overlay.style.opacity = 0;
+          ready.style.animation = "";
+          go.style.animation = "";
+        }, 2000);
       }
 
       function drawMap() {
