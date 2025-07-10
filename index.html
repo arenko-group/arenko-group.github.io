@@ -324,7 +324,84 @@
         100% { opacity: 0; transform: scale(1); }
       }
 
+      #leaderboard {
+        margin-top: 30px;
+        color: #fff;
+      }
 
+      #leaderboard h3 {
+        margin-bottom: 10px;
+        color: #00ffe7;
+        font-size: 20px;
+        border-bottom: 1px solid #00ffe7;
+        padding-bottom: 5px;
+      }
+
+      #leaderboard-list {
+        list-style-type: decimal;
+        padding-left: 20px;
+        text-align: left;
+      }
+
+      #leaderboard-list li {
+        margin-bottom: 6px;
+      }
+
+      #leaderboard-overlay {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0, 0, 0, 0.85);
+        z-index: 1001;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        animation: retroFadeIn 1s ease-out, flicker 2s infinite;
+      }
+
+      #leaderboard-popup {
+        background: #111;
+        border: 2px solid #00ffe7;
+        padding: 40px;
+        border-radius: 10px;
+        color: #00ffe7;
+        font-family: 'Courier New', Courier, monospace;
+        box-shadow: 0 0 20px #00ffe7;
+        animation: glowPulse 2s infinite alternate;
+        text-align: center;
+      }
+
+      #leaderboard-popup h2 {
+        margin-bottom: 20px;
+        border-bottom: 1px solid #00ffe7;
+        padding-bottom: 10px;
+      }
+
+      #endgame-leaderboard {
+        list-style: decimal;
+        text-align: left;
+        padding-left: 30px;
+        margin-bottom: 20px;
+      }
+
+      #endgame-leaderboard li {
+        margin: 6px 0;
+        color: #fff;
+      }
+
+      #leaderboard-popup button {
+        padding: 10px 20px;
+        background: #000;
+        color: #00ffe7;
+        border: 2px solid #00ffe7;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s ease;
+      }
+
+      #leaderboard-popup button:hover {
+        background: #00ffe7;
+        color: #000;
+      }
     </style>
   </head>
   <body>
@@ -336,15 +413,23 @@
             <input type="text" id="playerName" name="playerName" required autocomplete="off" />
             <button type="submit">Start Game</button>
           </form>
+
+            <div id="leaderboard">
+              <h3>🏆 High Scores</h3>
+              <ol id="leaderboard-list">
+                <li>No data</li>
+              </ol>
+            </div>
         </div>
         <div class="right-column">
           <h2>How to Play</h2>
           <ul>
-            <li>🎯 Collect <strong>+</strong> to increase frequency and score.</li>
-            <li>⚠️ Avoid <strong>−</strong>, it lowers frequency.</li>
-            <li>🎮 Use arrow keys or buttons to move Pac-Man.</li>
-            <li>🏁 Game ends when all items are collected.</li>
-            <li>📈 Stay close to 50.0Hz for best score!</li>
+            <li>🔋 Collect a <strong>+</strong> when the frequency dips. Inject more power and get things back on track</li>
+            <li>🪫 Snatch a <strong>−</strong> when the frequency surges.  Store that excess energy before it causes chaos</li>
+            <li>⚠️ But here's the catch: this grid has its limits </li>
+            <li>🪨 Stray outside the tighter target range of <strong>49.8Hz to 50.2Hz</strong>, and you'll see the grid start to crumble</li>
+            <li>📉 Too low, and power fades into darkness</li>
+            <li>📈 Too high, and things literally start to break apart! Breach the statutory limits and it's GAME OVER</li>
           </ul>
         </div>
       </div>
@@ -353,6 +438,16 @@
     <div id="ready-go-overlay">
       <div id="ready-text">READY...</div>
       <div id="go-text">GO!</div>
+    </div>
+
+    <div id="leaderboard-overlay">
+      <div id="leaderboard-popup">
+        <h2>🏆 High Scores</h2>
+        <ol id="endgame-leaderboard">
+          <!-- Populated by JS -->
+        </ol>
+        <button onclick="restartGame()">Play Again</button>
+      </div>
     </div>
 
 
@@ -381,6 +476,11 @@
       let frequency = 50.0;
       let loop;
       let paused = false;
+      let playerName = "";
+      let intervalDelay = 200; // if you're using dynamic speed
+      let leaderboard = JSON.parse(localStorage.getItem("leaderboard") || "[]");
+      let tickCount = 0;
+      let startTime = Date.now();
 
       function generateMap() {
         map = Array.from({ length: height }, (_, y) =>
@@ -399,6 +499,8 @@
         const name = document.getElementById("playerName").value.trim();
         if (!name) return;
 
+        playerName = document.getElementById("playerName").value.trim();
+
         const overlay = document.getElementById("start-screen-overlay");
         overlay.classList.add("fade-out");
 
@@ -408,6 +510,47 @@
         }, 600);
 
         return false;
+      }
+
+
+      // Render top 3 players
+      function updateLeaderboardDisplay() {
+        const list = document.getElementById("leaderboard-list");
+        list.innerHTML = "";
+
+        const top10= leaderboard.slice(0, 10);
+        if (top10.length === 0) {
+          list.innerHTML = "<li>Who will take the top spot?!</li>";
+          return;
+        }
+
+        top10.forEach(player => {
+          const li = document.createElement("li");
+          li.textContent = `${player.name} — ${player.score}`;
+          list.appendChild(li);
+        });
+      }
+
+      window.onload = () => {
+        updateLeaderboardDisplay();
+      };
+
+      function showLeaderboardOverlay() {
+        const list = document.getElementById("endgame-leaderboard");
+        list.innerHTML = "";
+
+        const top10 = leaderboard.slice(0, 10);
+        if (top10.length === 0) {
+          list.innerHTML = "<li>Who will take the top spot?!</li>";
+        } else {
+          top10.forEach(player => {
+            const li = document.createElement("li");
+            li.textContent = `${player.name} — ${player.score}`;
+            list.appendChild(li);
+          });
+        }
+
+        document.getElementById("leaderboard-overlay").style.display = "flex";
       }
 
       function showReadyGoFlash() {
@@ -492,9 +635,6 @@
         }
       }
 
-      let tickCount = 0;
-      let startTime = Date.now();
-
       function update() {
         if (paused) return; // stop updating during overlay
 
@@ -541,9 +681,19 @@
         // Check if frequency out of bounds -> game over
         if (frequency < 49.5 || frequency > 50.5) {
           clearInterval(loop);
+
+           // Save to leaderboard
+          leaderboard.push({ name: playerName, score: parseFloat(elapsed) });
+          leaderboard.sort((a, b) => b.score - a.score);
+          leaderboard = leaderboard.slice(0, 10);
+          localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+
           document.getElementById("gameOverMessage").textContent =
             `🛑 Grid Out of Limits\nYou survived ${elapsed} seconds`;
           document.getElementById("gameOverMessage").style.display = "block";
+
+          // Show leaderboard overlay after brief pause
+          setTimeout(showLeaderboardOverlay, 1000);
           return;
         }
 
@@ -578,6 +728,21 @@
       function setDir1(dx, dy) {
         pacman1.dx = dx;
         pacman1.dy = dy;
+      }
+      function restartGame() {
+        document.getElementById("leaderboard-overlay").style.display = "none";
+        document.getElementById("gameOverMessage").style.display = "none";
+        pacman1 = { x: 1, y: 1, dx: 0, dy: 0, score: 0, alive: true };
+        frequency = 50.0;
+        tickCount = 0;
+        startTime = Date.now(); // ✅ Reset the timer start time here
+        intervalDelay = 200;    // (optional) reset speed if it was increasing
+        generateMap();
+        drawMap();
+        showReadyGoFlash();  // 🎬 Show animation
+        setTimeout(() => {
+          loop = setInterval(update, intervalDelay); // ⏯ Start game after READY/GO
+        }, 2000); // match duration of READY/GO flash
       }
 
       document.addEventListener("keydown", (e) => {
