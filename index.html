@@ -272,18 +272,47 @@
         movePlayer(pacman1);
         drawMap();
 
-        // ✅ Update timer on screen
+        // Update timer on screen
         const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
         document.getElementById("timeVal").textContent = elapsed;
 
+        // Check if frequency out of bounds -> game over
         if (frequency < 49.5 || frequency > 50.5) {
           clearInterval(loop);
           document.getElementById("gameOverMessage").textContent =
             `🛑 Grid Out of Limits\nYou survived ${elapsed} seconds`;
           document.getElementById("gameOverMessage").style.display = "block";
+          return;
+        }
+
+        // Check if all plus and minus are collected
+        const noItemsLeft = map
+          .flat()
+          .every((cell) => cell !== 3 && cell !== 4);
+
+        if (noItemsLeft) {
+          // Generate 10 new items randomly on empty cells (value 2)
+          for (let i = 0; i < 10; i++) {
+            let rx, ry;
+            do {
+              rx = Math.floor(Math.random() * width);
+              ry = Math.floor(Math.random() * height);
+            } while (
+              map[ry][rx] !== 2 ||
+              (rx === pacman1.x && ry === pacman1.y)
+            );
+
+            map[ry][rx] = Math.random() < 0.5 ? 3 : 4;
+          }
+
+          // Increase game speed by decreasing intervalDelay, minimum 50ms
+          if (intervalDelay > 50) {
+            clearInterval(loop);
+            intervalDelay = Math.max(50, intervalDelay - 20);
+            loop = setInterval(update, intervalDelay);
+          }
         }
       }
-
       function setDir1(dx, dy) {
         pacman1.dx = dx;
         pacman1.dy = dy;
