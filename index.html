@@ -42,7 +42,7 @@
         transition: filter 1s ease;
       }
       body {
-        background: #111;
+        background: url("guardians-logo.png") center center / 65% no-repeat #111; /* Adjust 200% as needed */
         color: #fff;
         font-family: sans-serif;
         text-align: center;
@@ -87,25 +87,33 @@
       /* Top border */
       .wall.top {
         border-top: 2px solid #00ffe7;
-        box-shadow: 0 -2px 8px 0 #00ffe7, 0 -2px 16px 0 #00ffe7;
+        box-shadow:
+          0 -2px 8px 0 #00ffe7,
+          0 -2px 16px 0 #00ffe7;
       }
 
       /* Bottom border */
       .wall.bottom {
         border-bottom: 2px solid #00ffe7;
-        box-shadow: 0 2px 8px 0 #00ffe7, 0 2px 16px 0 #00ffe7;
+        box-shadow:
+          0 2px 8px 0 #00ffe7,
+          0 2px 16px 0 #00ffe7;
       }
 
       /* Left border */
       .wall.left {
         border-left: 2px solid #00ffe7;
-        box-shadow: -2px 0 8px 0 #00ffe7, -2px 0 16px 0 #00ffe7;
+        box-shadow:
+          -2px 0 8px 0 #00ffe7,
+          -2px 0 16px 0 #00ffe7;
       }
 
       /* Right border */
       .wall.right {
         border-right: 2px solid #00ffe7;
-        box-shadow: 2px 0 8px 0 #00ffe7, 2px 0 16px 0 #00ffe7;
+        box-shadow:
+          2px 0 8px 0 #00ffe7,
+          2px 0 16px 0 #00ffe7;
       }
 
       @keyframes wall-glow {
@@ -138,9 +146,11 @@
         margin-top: 10px;
       }
       #controls {
-        display: flex;
-        justify-content: center;
-        margin: 20px auto;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+        padding: 10px;
+        margin-top: 20px;
+        display: inline-block;
       }
       .control-set {
         display: grid;
@@ -186,13 +196,18 @@
       }
       #start-screen-overlay {
         position: fixed;
-        top: 0; left: 0; right: 0; bottom: 0;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         background: #000;
         z-index: 999;
         display: flex;
         align-items: center;
         justify-content: center;
-        animation: flicker 2s linear, retroFadeIn 1.2s ease-out;
+        animation:
+          flicker 2s linear,
+          retroFadeIn 1.2s ease-out;
       }
 
       #start-screen {
@@ -204,12 +219,15 @@
         border-radius: 10px;
         padding: 40px;
         color: #00ffe7;
-        font-family: 'Courier New', Courier, monospace;
-        box-shadow: 0 0 12px #00ffe7, 0 0 20px #00ffe7;
+        font-family: "Courier New", Courier, monospace;
+        box-shadow:
+          0 0 12px #00ffe7,
+          0 0 20px #00ffe7;
         animation: glowPulse 2s infinite alternate;
       }
 
-      .left-column, .right-column {
+      .left-column,
+      .right-column {
         flex: 1;
         padding: 20px;
       }
@@ -258,18 +276,31 @@
 
       @keyframes glowPulse {
         0% {
-          box-shadow: 0 0 10px #00ffe7, 0 0 20px #00ffe7;
+          box-shadow:
+            0 0 10px #00ffe7,
+            0 0 20px #00ffe7;
         }
         100% {
-          box-shadow: 0 0 20px #00ffe7, 0 0 30px #00ffe7;
+          box-shadow:
+            0 0 20px #00ffe7,
+            0 0 30px #00ffe7;
         }
       }
 
       @keyframes flicker {
-        0%, 18%, 22%, 25%, 53%, 57%, 100% {
+        0%,
+        18%,
+        22%,
+        25%,
+        53%,
+        57%,
+        100% {
           opacity: 1;
         }
-        19%, 21%, 24%, 56% {
+        19%,
+        21%,
+        24%,
+        56% {
           opacity: 0.6;
         }
       }
@@ -292,13 +323,16 @@
 
       #ready-go-overlay {
         position: fixed;
-        top: 0; left: 0; right: 0; bottom: 0;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         background: rgba(0, 0, 0, 0.85); /* darker overlay */
         display: flex;
         align-items: center;
         justify-content: center;
         flex-direction: column;
-        font-family: 'Courier New', Courier, monospace;
+        font-family: "Courier New", Courier, monospace;
         font-size: 48px;
         font-weight: bold;
         color: #00ffe7;
@@ -309,22 +343,41 @@
         transition: opacity 0.2s ease-in-out;
       }
 
-      #ready-text, #go-text {
+      #ready-text,
+      #go-text {
         opacity: 0;
         animation-duration: 0.6s;
         animation-fill-mode: forwards;
       }
 
       @keyframes showReady {
-        0% { opacity: 0; transform: scale(0.8); }
-        50% { opacity: 1; transform: scale(1.1); }
-        100% { opacity: 0; transform: scale(1); }
+        0% {
+          opacity: 0;
+          transform: scale(0.8);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.1);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(1);
+        }
       }
 
       @keyframes showGo {
-        0% { opacity: 0; transform: scale(0.8); }
-        50% { opacity: 1; transform: scale(1.1); }
-        100% { opacity: 0; transform: scale(1); }
+        0% {
+          opacity: 0;
+          transform: scale(0.8);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.1);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(1);
+        }
       }
 
       #leaderboard {
@@ -352,13 +405,18 @@
 
       #leaderboard-overlay {
         position: fixed;
-        top: 0; left: 0; right: 0; bottom: 0;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         background: rgba(0, 0, 0, 0.85);
         z-index: 1001;
         display: none;
         align-items: center;
         justify-content: center;
-        animation: retroFadeIn 1s ease-out, flicker 2s infinite;
+        animation:
+          retroFadeIn 1s ease-out,
+          flicker 2s infinite;
       }
 
       #leaderboard-popup {
@@ -367,7 +425,7 @@
         padding: 40px;
         border-radius: 10px;
         color: #00ffe7;
-        font-family: 'Courier New', Courier, monospace;
+        font-family: "Courier New", Courier, monospace;
         box-shadow: 0 0 20px #00ffe7;
         animation: glowPulse 2s infinite alternate;
         text-align: center;
@@ -405,6 +463,43 @@
         background: #00ffe7;
         color: #000;
       }
+
+      /* === Updated unified background for the entire #game-container === */
+      #game-container {
+        background: rgba(
+          0,
+          0,
+          0,
+          0.6
+        ); /* single shared semi-transparent background */
+        border-radius: 10px;
+        padding: 20px 40px; /* wider padding for comfort */
+        margin: 20px auto;
+        max-width: fit-content;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: white; /* ensure text inside is visible */
+      }
+
+      /* Remove individual backgrounds from frequency and timer */
+      #frequency,
+      #timer {
+        background: transparent !important;
+        padding: 8px 0; /* vertical spacing only */
+        border-radius: 0;
+        display: block; /* separate lines */
+        margin-top: 10px;
+        font-size: 18px;
+      }
+
+      /* Make the freq and timer spans slightly bigger */
+      #frequency span,
+      #timer span {
+        font-size: 24px;
+        font-weight: bold;
+      }
     </style>
   </head>
   <body>
@@ -413,26 +508,45 @@
         <div class="left-column">
           <form id="start-form" onsubmit="return startGame(event)">
             <h2>Enter Your Name</h2>
-            <input type="text" id="playerName" name="playerName" required autocomplete="off" />
+            <input
+              type="text"
+              id="playerName"
+              name="playerName"
+              required
+              autocomplete="off"
+            />
             <button type="submit">Start Game</button>
           </form>
 
-            <div id="leaderboard">
-              <h3>🏆 High Scores</h3>
-              <ol id="leaderboard-list">
-                <li>No data</li>
-              </ol>
-            </div>
+          <div id="leaderboard">
+            <h3>🏆 High Scores</h3>
+            <ol id="leaderboard-list">
+              <li>No data</li>
+            </ol>
+          </div>
         </div>
         <div class="right-column">
           <h2>How to Play</h2>
           <ul>
-            <li>🔋 Collect a <strong>+</strong> when the frequency dips. Inject more power and get things back on track</li>
-            <li>🪫 Snatch a <strong>−</strong> when the frequency surges.  Store that excess energy before it causes chaos</li>
-            <li>⚠️ But here's the catch: this grid has its limits </li>
-            <li>🪨 Stray outside the tighter target range of <strong>49.8Hz to 50.2Hz</strong>, and you'll see the grid start to crumble</li>
+            <li>
+              🔋 Collect a <strong>+</strong> when the frequency dips. Inject
+              more power and get things back on track
+            </li>
+            <li>
+              🪫 Snatch a <strong>−</strong> when the frequency surges. Store
+              that excess energy before it causes chaos
+            </li>
+            <li>⚠️ But here's the catch: this grid has its limits</li>
+            <li>
+              🪨 Stray outside the tighter target range of
+              <strong>49.8Hz to 50.2Hz</strong>, and you'll see the grid start
+              to crumble
+            </li>
             <li>📉 Too low, and power fades into darkness</li>
-            <li>📈 Too high, and things literally start to break apart! Breach the statutory limits and it's GAME OVER</li>
+            <li>
+              📈 Too high, and things literally start to break apart! Breach the
+              statutory limits and it's GAME OVER
+            </li>
           </ul>
         </div>
       </div>
@@ -454,12 +568,12 @@
       </div>
     </div>
 
-
-    <h1>Grid Frequency Game</h1>
-    <div id="frequency">Grid Frequency: <span id="freqVal">50.0</span>Hz</div>
-    <div id="timer">Time Survived: <span id="timeVal">0.00</span> seconds</div>
     <div id="game-container">
+      <div id="frequency">Grid Frequency: <span id="freqVal">50.0</span>Hz</div>
       <div id="game"></div>
+      <div id="timer">
+        Time Survived: <span id="timeVal">0.00</span> seconds
+      </div>
     </div>
     <div id="controls">
       <div class="control-set">
@@ -521,19 +635,18 @@
         return false;
       }
 
-
       // Render top 10 players
       function updateLeaderboardDisplay() {
         const list = document.getElementById("leaderboard-list");
         list.innerHTML = "";
 
-        const top10= leaderboard.slice(0, 10);
+        const top10 = leaderboard.slice(0, 10);
         if (top10.length === 0) {
           list.innerHTML = "<li>Who will take the top spot?!</li>";
           return;
         }
 
-        top10.forEach(player => {
+        top10.forEach((player) => {
           const li = document.createElement("li");
           li.textContent = `${player.name} — ${player.score}`;
           list.appendChild(li);
@@ -552,7 +665,7 @@
         if (top10.length === 0) {
           list.innerHTML = "<li>Who will take the top spot?!</li>";
         } else {
-          top10.forEach(player => {
+          top10.forEach((player) => {
             const li = document.createElement("li");
             li.textContent = `${player.name} — ${player.score}`;
             list.appendChild(li);
@@ -689,7 +802,7 @@
         if (frequency < 49.5 || frequency > 50.5) {
           clearInterval(loop);
 
-           // Save to leaderboard
+          // Save to leaderboard
           leaderboard.push({ name: playerName, score: parseFloat(elapsed) });
           leaderboard.sort((a, b) => b.score - a.score);
           leaderboard = leaderboard.slice(0, 10);
@@ -743,16 +856,21 @@
         document.getElementById("gameOverMessage").style.display = "none";
 
         // stop residual shaking
-        document.body.classList.remove("shaking", "dimmed", "brightened", "standard");
+        document.body.classList.remove(
+          "shaking",
+          "dimmed",
+          "brightened",
+          "standard",
+        );
 
         pacman1 = { x: 1, y: 1, dx: 0, dy: 0, score: 0, alive: true };
         frequency = 50.0;
         tickCount = 0;
         startTime = Date.now(); // ✅ Reset the timer start time here
-        intervalDelay = 200;    // (optional) reset speed if it was increasing
+        intervalDelay = 200; // (optional) reset speed if it was increasing
         generateMap();
         drawMap();
-        showReadyGoFlash();  // 🎬 Show animation
+        showReadyGoFlash(); // 🎬 Show animation
         setTimeout(() => {
           loop = setInterval(update, intervalDelay); // ⏯ Start game after READY/GO
         }, 2000); // match duration of READY/GO flash
@@ -762,9 +880,14 @@
         // Hide leaderboard and game over message
         document.getElementById("leaderboard-overlay").style.display = "none";
         document.getElementById("gameOverMessage").style.display = "none";
-        
+
         // stop residual shaking
-        document.body.classList.remove("shaking", "dimmed", "brightened", "standard");
+        document.body.classList.remove(
+          "shaking",
+          "dimmed",
+          "brightened",
+          "standard",
+        );
 
         // Reset name input
         document.getElementById("playerName").value = "";
