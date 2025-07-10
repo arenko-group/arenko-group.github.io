@@ -4,6 +4,43 @@
     <meta charset="UTF-8" />
     <title>Grid Frequency Game</title>
     <style>
+      /* Dim effect */
+      .standard {
+        filter: brightness(1);
+        transition: filter 1s ease;
+      }
+
+      .dimmed {
+        filter: brightness(0.5);
+        transition: filter 1s ease;
+      }
+
+      .brightened {
+        filter: brightness(1.5);
+        transition: filter 0.75s ease;
+      }
+
+      /* Shake effect */
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translate(0, 0);
+        }
+        20%,
+        60% {
+          transform: translate(-5px, 0);
+        }
+        40%,
+        80% {
+          transform: translate(5px, 0);
+        }
+      }
+
+      .shaking {
+        animation: shake 0.5s infinite;
+        filter: contrast(1.5);
+        transition: filter 1s ease;
+      }
       body {
         background: #111;
         color: #fff;
@@ -275,6 +312,26 @@
         // Update timer on screen
         const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
         document.getElementById("timeVal").textContent = elapsed;
+
+        const body = document.body;
+
+        if (frequency < 49.8) {
+          body.classList.add("dimmed");
+          body.classList.add("shaking");
+        } else {
+          body.classList.remove("dimmed");
+          body.classList.remove("shaking");
+          body.classList.add("standard");
+        }
+
+        if (frequency > 50.2) {
+          body.classList.add("brightened");
+          body.classList.add("shaking");
+        } else {
+          body.classList.remove("brightened");
+          body.classList.remove("shaking");
+          body.classList.add("standard");
+        }
 
         // Check if frequency out of bounds -> game over
         if (frequency < 49.5 || frequency > 50.5) {
