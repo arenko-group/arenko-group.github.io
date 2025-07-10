@@ -503,7 +503,10 @@
 
       #intro-screen {
         position: fixed;
-        top: 0; left: 0; right: 0; bottom: 0;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         background: #000;
         z-index: 10000;
         display: flex;
@@ -526,7 +529,7 @@
       #enter-button {
         padding: 18px 50px;
         font-size: 24px;
-        font-family: 'Courier New', monospace;
+        font-family: "Courier New", monospace;
         background: black;
         color: #00ffe7;
         border: 3px solid #00ffe7;
@@ -538,19 +541,23 @@
       #enter-button:hover {
         background: #00ffe7;
         color: black;
-        box-shadow: 0 0 20px #00ffe7, 0 0 40px #00ffe7;
+        box-shadow:
+          0 0 20px #00ffe7,
+          0 0 40px #00ffe7;
       }
-
 
       .intro-fade-out {
         animation: fadeOut 0.7s ease forwards;
       }
-
     </style>
   </head>
   <body>
     <div id="intro-screen">
-      <img src="guardians-logo.png" alt="Guardians of the Grid" id="intro-logo" />
+      <img
+        src="guardians-logo.png"
+        alt="Guardians of the Grid"
+        id="intro-logo"
+      />
       <button id="enter-button">ENTER</button>
     </div>
 
@@ -681,6 +688,7 @@
         setTimeout(() => {
           overlay.style.display = "none";
           showReadyGoFlash(); // Trigger READY/GO!
+          startTime = Date.now();
         }, 600);
 
         return false;
@@ -745,6 +753,7 @@
           ready.style.animation = "";
           go.style.animation = "";
           paused = false; // resume game
+          startTime = Date.now();
         }, 2000);
       }
 
