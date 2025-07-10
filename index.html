@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Arenko Game</title>
+    <title>Grid Frequency Game</title>
     <style>
       body {
         background: #111;
@@ -11,6 +11,12 @@
         text-align: center;
         margin: 0;
         padding: 0;
+      }
+      #game-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
       }
       #game {
         display: grid;
@@ -38,10 +44,6 @@
         background: gold;
         border-radius: 50%;
       }
-      .pacman2 {
-        background: deeppink;
-        border-radius: 50%;
-      }
       #scoreboard {
         display: flex;
         justify-content: center;
@@ -53,9 +55,8 @@
       }
       #controls {
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         margin: 20px auto;
-        max-width: 600px;
       }
       .control-set {
         display: grid;
@@ -72,26 +73,6 @@
       }
       .btn:active {
         background: #555;
-      }
-      #nameEntry,
-      #gameMode,
-      #replayPrompt {
-        margin-top: 20px;
-      }
-      .keyboard {
-        display: grid;
-        grid-template-columns: repeat(10, 1fr);
-        max-width: 300px;
-        margin: 10px auto;
-        gap: 5px;
-      }
-      .key-btn {
-        padding: 10px;
-        font-size: 16px;
-        background: #222;
-        color: #fff;
-        border: none;
-        border-radius: 3px;
       }
       #gameOverMessage {
         display: none;
@@ -110,25 +91,20 @@
     </style>
   </head>
   <body>
-    <h1>Arenko Game - Balance the Grid!</h1>
+    <h1>Grid Frequency Game</h1>
     <div id="scoreboard">
-      <div class="score" id="score1">Player 1: 0</div>
-      <div class="score" id="score2">Player 2: 0</div>
+      <div class="score" id="score1">Score: 0</div>
     </div>
     <div id="frequency">Grid Frequency: <span id="freqVal">50.0</span>Hz</div>
-    <div id="game"></div>
+    <div id="game-container">
+      <div id="game"></div>
+    </div>
     <div id="controls">
       <div class="control-set">
         <button class="btn" onclick="setDir1(0, -1)">⬆️</button>
         <button class="btn" onclick="setDir1(-1, 0)">⬅️</button>
         <button class="btn" onclick="setDir1(1, 0)">➡️</button>
         <button class="btn" onclick="setDir1(0, 1)">🔻</button>
-      </div>
-      <div class="control-set">
-        <button class="btn" onclick="setDir2(0, -1)">W</button>
-        <button class="btn" onclick="setDir2(-1, 0)">A</button>
-        <button class="btn" onclick="setDir2(1, 0)">D</button>
-        <button class="btn" onclick="setDir2(0, 1)">S</button>
       </div>
     </div>
     <div id="gameOverMessage">Game Over</div>
@@ -138,14 +114,6 @@
       let game = document.getElementById("game");
       let map = [];
       let pacman1 = { x: 1, y: 1, dx: 0, dy: 0, score: 0, alive: true };
-      let pacman2 = {
-        x: width - 2,
-        y: height - 2,
-        dx: 0,
-        dy: 0,
-        score: 0,
-        alive: true,
-      };
       let frequency = 50.0;
       let loop;
 
@@ -155,12 +123,11 @@
             if (y === 0 || y === height - 1 || x === 0 || x === width - 1)
               return 1;
             if (Math.random() < 0.15) return 1;
-            if (Math.random() < 0.15) return Math.random() < 0.5 ? 3 : 4; // 3=plus, 4=minus
-            return 2; // empty
+            if (Math.random() < 0.15) return Math.random() < 0.5 ? 3 : 4;
+            return 2;
           }),
         );
         map[pacman1.y][pacman1.x] = 2;
-        map[pacman2.y][pacman2.x] = 2;
       }
 
       function drawMap() {
@@ -173,8 +140,6 @@
             if (map[y][x] === 1) cell.classList.add("wall");
             else if (pacman1.x === x && pacman1.y === y && pacman1.alive)
               cell.classList.add("pacman1");
-            else if (pacman2.x === x && pacman2.y === y && pacman2.alive)
-              cell.classList.add("pacman2");
             else if (map[y][x] === 3) cell.classList.add("plus");
             else if (map[y][x] === 4) cell.classList.add("minus");
             else cell.classList.add("empty");
@@ -182,6 +147,8 @@
           }
         }
         document.getElementById("freqVal").textContent = frequency.toFixed(1);
+        document.getElementById("score1").textContent =
+          `Score: ${pacman1.score}`;
       }
 
       function movePlayer(p) {
@@ -193,22 +160,21 @@
           p.y = ny;
           if (map[ny][nx] === 3) {
             frequency += 0.5;
+            p.score += 10;
             map[ny][nx] = 2;
           } else if (map[ny][nx] === 4) {
             frequency -= 0.5;
+            p.score += 10;
             map[ny][nx] = 2;
           }
         }
       }
 
       function update() {
-        // Random drift: ±0.1 Hz occasionally
         if (Math.random() < 0.2) {
           frequency += (Math.random() - 0.5) * 0.2;
         }
-
         movePlayer(pacman1);
-        movePlayer(pacman2);
         drawMap();
 
         const noItemsLeft = map
@@ -228,20 +194,12 @@
         pacman1.dx = dx;
         pacman1.dy = dy;
       }
-      function setDir2(dx, dy) {
-        pacman2.dx = dx;
-        pacman2.dy = dy;
-      }
 
       document.addEventListener("keydown", (e) => {
         if (e.key === "ArrowUp") setDir1(0, -1);
         if (e.key === "ArrowDown") setDir1(0, 1);
         if (e.key === "ArrowLeft") setDir1(-1, 0);
         if (e.key === "ArrowRight") setDir1(1, 0);
-        if (e.key === "w") setDir2(0, -1);
-        if (e.key === "s") setDir2(0, 1);
-        if (e.key === "a") setDir2(-1, 0);
-        if (e.key === "d") setDir2(1, 0);
       });
 
       generateMap();
