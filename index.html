@@ -879,6 +879,14 @@
         if (frequency < 49.5 || frequency > 50.5) {
           clearInterval(loop);
 
+          // 🔇 Stop background music
+          const music = document.getElementById("game-music");
+          music.pause();
+          music.currentTime = 0;
+
+          // 🔊 Play game over sound
+          document.getElementById("game-over-sound").play();
+
           // Save to leaderboard
           leaderboard.push({ name: playerName, score: parseFloat(elapsed) });
           leaderboard.sort((a, b) => b.score - a.score);
@@ -947,6 +955,9 @@
         intervalDelay = 200; // (optional) reset speed if it was increasing
         generateMap();
         drawMap();
+
+        // 🔊 Restart music
+        document.getElementById("game-music").play();
         showReadyGoFlash(); // 🎬 Show animation
         setTimeout(() => {
           loop = setInterval(update, intervalDelay); // ⏯ Start game after READY/GO
@@ -983,6 +994,9 @@
         generateMap();
         drawMap();
 
+        // 🔊 Restart music
+        document.getElementById("game-music").play();
+
         playerName = "";
       }
 
@@ -994,6 +1008,11 @@
       });
 
       document.getElementById("enter-button").addEventListener("click", () => {
+          // 🔊 Unmute and play music
+        const music = document.getElementById("game-music");
+        music.muted = false;
+        music.play();
+
         const intro = document.getElementById("intro-screen");
         const startOverlay = document.getElementById("start-screen-overlay");
 
@@ -1011,6 +1030,8 @@
 
       generateMap();
       drawMap();
-    </script>
+      </script>
+  <audio id="game-over-sound" src="game_over.wav" preload="auto"></audio>
+  <audio id="game-music" src="main_sound.mp3" preload="auto" loop muted></audio>
   </body>
 </html>
