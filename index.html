@@ -405,18 +405,17 @@
 
       #leaderboard-overlay {
         position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.85);
+        inset: 0; /* top: 0; right: 0; bottom: 0; left: 0 in one line */
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.9);
         z-index: 1001;
         display: none;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        animation:
-          retroFadeIn 1s ease-out,
-          flicker 2s infinite;
+        animation: retroFadeIn 1s ease-out, flicker 2s infinite;
+        overflow: hidden;
       }
 
       #leaderboard-popup {
@@ -505,8 +504,8 @@
         position: fixed;
         top: 0;
         left: 0;
-        right: 0;
-        bottom: 0;
+        width: 100vw;
+        height: 100vh;
         background: #000;
         z-index: 10000;
         display: flex;
@@ -514,7 +513,8 @@
         align-items: center;
         justify-content: center;
         animation: retroFadeIn 1.2s ease-out;
-        padding: 40px;
+        overflow: hidden;
+        padding: 0;
       }
 
       #intro-logo {
@@ -549,6 +549,15 @@
       .intro-fade-out {
         animation: fadeOut 0.7s ease forwards;
       }
+
+      body.intro-lock {
+        overflow: hidden;
+      }
+
+      body.leaderboard-lock {
+        overflow: hidden;
+      }
+
     </style>
   </head>
   <body>
@@ -691,8 +700,12 @@
           overlay.style.display = "none";
           showReadyGoFlash(); // Trigger READY/GO!
           startTime = Date.now();
-        }, 600);
 
+          // ✅ start loop after READY/GO flash is done
+          setTimeout(() => {
+            loop = setInterval(update, intervalDelay);
+          }, 2000); // match READY/GO animation duration
+        }, 600);
         return false;
       }
 
@@ -716,6 +729,7 @@
 
       window.onload = () => {
         updateLeaderboardDisplay();
+        document.body.classList.add("intro-lock");
       };
 
       function showLeaderboardOverlay() {
@@ -733,6 +747,7 @@
           });
         }
 
+        document.body.classList.add("leaderboard-lock");
         document.getElementById("leaderboard-overlay").style.display = "flex";
       }
 
@@ -987,12 +1002,15 @@
         setTimeout(() => {
           intro.style.display = "none";
           startOverlay.style.display = "flex";
+          
+          // Unlock scroll when intro is gone
+          document.body.classList.remove("intro-lock");
+
         }, 700); // Match fadeOut duration
       });
 
       generateMap();
       drawMap();
-      loop = setInterval(update, 200);
     </script>
   </body>
 </html>
