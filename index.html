@@ -303,14 +303,12 @@
       function update() {
         tickCount++;
 
-        const maxTicks = 150;
-        const progress = Math.min(tickCount / maxTicks, 1);
-        const maxDeviation = 0.1;
+        const maxDeviation = 0.15;
         const minDeviation = 0.01;
         const currentDeviation =
-          minDeviation + (maxDeviation - minDeviation) * progress;
+          minDeviation + ((maxDeviation - minDeviation) * tickCount) / 60;
 
-        if (Math.random() < 0.2) {
+        if (Math.random() < 0.25) {
           frequency += (Math.random() - 0.5) * currentDeviation * 2;
         }
 
