@@ -290,7 +290,7 @@
       #ready-go-overlay {
         position: fixed;
         top: 0; left: 0; right: 0; bottom: 0;
-        background: transparent;
+        background: rgba(0, 0, 0, 0.85); /* darker overlay */
         display: flex;
         align-items: center;
         justify-content: center;
@@ -380,6 +380,7 @@
       let pacman1 = { x: 1, y: 1, dx: 0, dy: 0, score: 0, alive: true };
       let frequency = 50.0;
       let loop;
+      let paused = false;
 
       function generateMap() {
         map = Array.from({ length: height }, (_, y) =>
@@ -414,6 +415,8 @@
         const ready = document.getElementById("ready-text");
         const go = document.getElementById("go-text");
 
+        // Pause the game logic
+        paused = true;
         overlay.style.opacity = 1;
 
         ready.style.animation = "showReady 1s ease-out";
@@ -425,6 +428,7 @@
           overlay.style.opacity = 0;
           ready.style.animation = "";
           go.style.animation = "";
+          paused = false; // resume game
         }, 2000);
       }
 
@@ -492,6 +496,8 @@
       let startTime = Date.now();
 
       function update() {
+        if (paused) return; // stop updating during overlay
+
         tickCount++;
 
         const maxTicks = 150;
