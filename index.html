@@ -146,7 +146,7 @@
             game.appendChild(cell);
           }
         }
-        document.getElementById("freqVal").textContent = frequency.toFixed(1);
+        document.getElementById("freqVal").textContent = frequency.toFixed(4);
         document.getElementById("score1").textContent =
           `Score: ${pacman1.score}`;
       }
@@ -159,21 +159,26 @@
           p.x = nx;
           p.y = ny;
           if (map[ny][nx] === 3) {
-            frequency += 0.5;
+            frequency += 0.1;
             p.score += 10;
             map[ny][nx] = 2;
           } else if (map[ny][nx] === 4) {
-            frequency -= 0.5;
+            frequency -= 0.1;
             p.score += 10;
             map[ny][nx] = 2;
           }
         }
       }
 
+      let tickCount = 0;
       function update() {
+        tickCount++;
+        const deviationFactor = 0.001 * tickCount;
+
         if (Math.random() < 0.2) {
-          frequency += (Math.random() - 0.5) * 0.2;
+          frequency += (Math.random() - 0.5) * deviationFactor;
         }
+
         movePlayer(pacman1);
         drawMap();
 
