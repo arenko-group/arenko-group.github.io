@@ -144,8 +144,11 @@
       }
       .control-set {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 60px);
+        grid-template-rows: repeat(3, 60px);
         gap: 5px;
+        justify-items: center;
+        align-items: center;
       }
       .btn {
         padding: 15px;
@@ -459,10 +462,15 @@
     </div>
     <div id="controls">
       <div class="control-set">
+        <div></div>
         <button class="btn" onclick="setDir1(0, -1)">⬆️</button>
+        <div></div>
         <button class="btn" onclick="setDir1(-1, 0)">⬅️</button>
+        <div></div>
         <button class="btn" onclick="setDir1(1, 0)">➡️</button>
+        <div></div>
         <button class="btn" onclick="setDir1(0, 1)">⬇️</button>
+        <div></div>
       </div>
     </div>
     <div id="gameOverMessage">Game Over</div>
@@ -640,14 +648,12 @@
 
         tickCount++;
 
-        const maxTicks = 150;
-        const progress = Math.min(tickCount / maxTicks, 1);
-        const maxDeviation = 0.1;
+        const maxDeviation = 0.15;
         const minDeviation = 0.01;
         const currentDeviation =
-          minDeviation + (maxDeviation - minDeviation) * progress;
+          minDeviation + ((maxDeviation - minDeviation) * tickCount) / 60;
 
-        if (Math.random() < 0.2) {
+        if (Math.random() < 0.25) {
           frequency += (Math.random() - 0.5) * currentDeviation * 2;
         }
 
