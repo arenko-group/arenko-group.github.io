@@ -414,7 +414,9 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        animation: retroFadeIn 1s ease-out, flicker 2s infinite;
+        animation:
+          retroFadeIn 1s ease-out,
+          flicker 2s infinite;
         overflow: hidden;
       }
 
@@ -557,7 +559,6 @@
       body.leaderboard-lock {
         overflow: hidden;
       }
-
     </style>
   </head>
   <body>
@@ -1008,7 +1009,7 @@
       });
 
       document.getElementById("enter-button").addEventListener("click", () => {
-          // 🔊 Unmute and play music
+        // 🔊 Unmute and play music
         const music = document.getElementById("game-music");
         music.muted = false;
         music.play();
@@ -1021,17 +1022,22 @@
         setTimeout(() => {
           intro.style.display = "none";
           startOverlay.style.display = "flex";
-          
+
           // Unlock scroll when intro is gone
           document.body.classList.remove("intro-lock");
-
         }, 700); // Match fadeOut duration
       });
 
       generateMap();
       drawMap();
-      </script>
-  <audio id="game-over-sound" src="game_over.wav" preload="auto"></audio>
-  <audio id="game-music" src="main_sound.mp3" preload="auto" loop muted></audio>
+    </script>
+    <audio id="game-over-sound" src="game_over.wav" preload="auto"></audio>
+    <audio
+      id="game-music"
+      src="main_sound.mp3"
+      preload="auto"
+      loop
+      muted
+    ></audio>
   </body>
 </html>
