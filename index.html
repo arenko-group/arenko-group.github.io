@@ -27,15 +27,23 @@
         width: 20px;
         height: 20px;
         background: black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 14px;
+        color: white;
       }
       .wall {
         background: #333;
       }
       .plus {
-        background: green;
+        background: #2c6; /* greenish */
+        color: black;
       }
       .minus {
-        background: crimson;
+        background: #c33; /* reddish */
+        color: white;
       }
       .empty {
         background: black;
@@ -70,6 +78,7 @@
         color: #fff;
         border: none;
         border-radius: 5px;
+        cursor: pointer;
       }
       .btn:active {
         background: #555;
@@ -83,10 +92,18 @@
         background: black;
         padding: 40px;
         border-radius: 10px;
-        font-size: 32px;
+        font-size: 28px;
         font-weight: bold;
         z-index: 10;
         color: white;
+        white-space: pre-line;
+      }
+      #frequency {
+        margin-top: 10px;
+        font-size: 18px;
+      }
+      #frequency span {
+        font-weight: bold;
       }
     </style>
   </head>
@@ -108,6 +125,7 @@
       </div>
     </div>
     <div id="gameOverMessage">Game Over</div>
+
     <script>
       const width = 15,
         height = 15;
@@ -133,20 +151,41 @@
       function drawMap() {
         game.innerHTML = "";
         game.style.gridTemplateColumns = `repeat(${width}, 20px)`;
+
         for (let y = 0; y < height; y++) {
           for (let x = 0; x < width; x++) {
             let cell = document.createElement("div");
             cell.className = "cell";
-            if (map[y][x] === 1) cell.classList.add("wall");
-            else if (pacman1.x === x && pacman1.y === y && pacman1.alive)
+
+            if (map[y][x] === 1) {
+              cell.classList.add("wall");
+            } else if (pacman1.x === x && pacman1.y === y && pacman1.alive) {
               cell.classList.add("pacman1");
-            else if (map[y][x] === 3) cell.classList.add("plus");
-            else if (map[y][x] === 4) cell.classList.add("minus");
-            else cell.classList.add("empty");
+            } else if (map[y][x] === 3) {
+              cell.classList.add("plus");
+              cell.textContent = "+";
+            } else if (map[y][x] === 4) {
+              cell.classList.add("minus");
+              cell.textContent = "−";
+            } else {
+              cell.classList.add("empty");
+            }
+
             game.appendChild(cell);
           }
         }
-        document.getElementById("freqVal").textContent = frequency.toFixed(1);
+
+        const freqValEl = document.getElementById("freqVal");
+        freqValEl.textContent = frequency.toFixed(1);
+
+        if (frequency >= 49.8 && frequency <= 50.2) {
+          freqValEl.style.color = "lightgreen";
+        } else if (frequency >= 49.5 && frequency <= 50.5) {
+          freqValEl.style.color = "orange";
+        } else {
+          freqValEl.style.color = "red";
+        }
+
         document.getElementById("score1").textContent =
           `Score: ${pacman1.score}`;
       }
@@ -174,6 +213,7 @@
         if (Math.random() < 0.2) {
           frequency += (Math.random() - 0.5) * 0.2;
         }
+
         movePlayer(pacman1);
         drawMap();
 
