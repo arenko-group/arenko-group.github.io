@@ -1,1 +1,338 @@
-Hello, world!
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>2-Player Pac-Man</title>
+    <style>
+      body {
+        background: #111;
+        color: #fff;
+        font-family: sans-serif;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+      }
+      #game {
+        display: grid;
+        margin: 20px auto;
+        gap: 1px;
+      }
+      .cell {
+        width: 20px;
+        height: 20px;
+        background: black;
+      }
+      .wall {
+        background: #333;
+      }
+      .dot {
+        background: yellow;
+      }
+      .empty {
+        background: black;
+      }
+      .pacman1 {
+        background: gold;
+        border-radius: 50%;
+      }
+      .pacman2 {
+        background: deeppink;
+        border-radius: 50%;
+      }
+      .ghost {
+        background: red;
+        border-radius: 50%;
+      }
+      #scoreboard {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-top: 10px;
+      }
+      .score {
+        font-size: 18px;
+      }
+      #controls {
+        display: flex;
+        justify-content: space-between;
+        margin: 20px auto;
+        max-width: 600px;
+      }
+      .control-set {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 5px;
+      }
+      .btn {
+        padding: 15px;
+        font-size: 20px;
+        background: #333;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+      }
+      .btn:active {
+        background: #555;
+      }
+      #nameEntry {
+        margin-top: 20px;
+      }
+      .keyboard {
+        display: grid;
+        grid-template-columns: repeat(10, 1fr);
+        max-width: 320px;
+        margin: 10px auto;
+        gap: 5px;
+      }
+      .key-btn {
+        padding: 10px;
+        font-size: 16px;
+        background: #222;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>2-Player Pac-Man</h1>
+    <div id="scoreboard">
+      <div class="score" id="score1">Player 1: 0</div>
+      <div class="score" id="score2">Player 2: 0</div>
+    </div>
+    <div id="game"></div>
+    <div id="controls">
+      <div class="control-set">
+        <button class="btn" onclick="setDir1(0, -1)">⬆️</button>
+        <button class="btn" onclick="setDir1(-1, 0)">⬅️</button>
+        <button class="btn" onclick="setDir1(1, 0)">➡️</button>
+        <button class="btn" onclick="setDir1(0, 1)">🔻</button>
+      </div>
+      <div class="control-set">
+        <button class="btn" onclick="setDir2(0, -1)">W</button>
+        <button class="btn" onclick="setDir2(-1, 0)">A</button>
+        <button class="btn" onclick="setDir2(1, 0)">D</button>
+        <button class="btn" onclick="setDir2(0, 1)">S</button>
+      </div>
+    </div>
+
+    <div id="nameEntry">
+      <h3>Enter Player Names</h3>
+      <input id="player1Name" placeholder="Player 1 Name" />
+      <input id="player2Name" placeholder="Player 2 Name" />
+      <button onclick="startGame()">Start Game</button>
+      <div class="keyboard" id="keyboard"></div>
+    </div>
+
+    <div id="leaderboard"></div>
+
+    <script>
+      const width = 15,
+        height = 15;
+      let game = document.getElementById("game");
+      let map = [];
+
+      let pacman1, pacman2, ghost, loop;
+      let leaderboard = [];
+
+      const keys = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        .split("")
+        .concat(["SPACE", "DEL"]);
+      const keyboardDiv = document.getElementById("keyboard");
+      let activeInput = null;
+
+      document
+        .getElementById("player1Name")
+        .addEventListener(
+          "focus",
+          () => (activeInput = document.getElementById("player1Name")),
+        );
+      document
+        .getElementById("player2Name")
+        .addEventListener(
+          "focus",
+          () => (activeInput = document.getElementById("player2Name")),
+        );
+
+      keys.forEach((k) => {
+        let btn = document.createElement("button");
+        btn.textContent = k;
+        btn.className = "key-btn";
+        btn.onclick = () => {
+          if (!activeInput) return;
+          if (k === "DEL") {
+            activeInput.value = activeInput.value.slice(0, -1);
+          } else if (k === "SPACE") {
+            activeInput.value += " ";
+          } else {
+            activeInput.value += k;
+          }
+        };
+        keyboardDiv.appendChild(btn);
+      });
+
+      function startGame() {
+        let p1Name = document.getElementById("player1Name").value || "Player 1";
+        let p2Name = document.getElementById("player2Name").value || "Player 2";
+        document.getElementById("score1").textContent = `${p1Name}: 0`;
+        document.getElementById("score2").textContent = `${p2Name}: 0`;
+        document.getElementById("nameEntry").style.display = "none";
+
+        pacman1 = {
+          name: p1Name,
+          x: 1,
+          y: 1,
+          dx: 0,
+          dy: 0,
+          score: 0,
+          alive: true,
+        };
+        pacman2 = {
+          name: p2Name,
+          x: width - 2,
+          y: height - 2,
+          dx: 0,
+          dy: 0,
+          score: 0,
+          alive: true,
+        };
+        ghost = { x: Math.floor(width / 2), y: Math.floor(height / 2) };
+
+        generateMap();
+        drawMap();
+        loop = setInterval(update, 200);
+      }
+
+      function endGame() {
+        clearInterval(loop);
+        leaderboard.push({ name: pacman1.name, score: pacman1.score });
+        leaderboard.push({ name: pacman2.name, score: pacman2.score });
+        leaderboard.sort((a, b) => b.score - a.score);
+
+        let boardHTML =
+          "<h3>Leaderboard</h3><ol>" +
+          leaderboard
+            .slice(0, 5)
+            .map((p) => `<li>${p.name}: ${p.score}</li>`)
+            .join("") +
+          "</ol>";
+        document.getElementById("leaderboard").innerHTML = boardHTML;
+        setTimeout(() => {
+          document.getElementById("player1Name").value = "";
+          document.getElementById("player2Name").value = "";
+          document.getElementById("nameEntry").style.display = "block";
+        }, 2000);
+      }
+
+      function generateMap() {
+        map = Array.from({ length: height }, (_, y) =>
+          Array.from({ length: width }, (_, x) => {
+            if (y === 0 || y === height - 1 || x === 0 || x === width - 1)
+              return 1;
+            if (Math.random() < 0.15) return 1;
+            if (Math.random() < 0.3) return 0;
+            return 2;
+          }),
+        );
+        map[pacman1.y][pacman1.x] = 2;
+        map[pacman2.y][pacman2.x] = 2;
+        map[ghost.y][ghost.x] = 2;
+      }
+
+      function drawMap() {
+        game.innerHTML = "";
+        game.style.gridTemplateColumns = `repeat(${width}, 20px)`;
+        for (let y = 0; y < height; y++) {
+          for (let x = 0; x < width; x++) {
+            let cell = document.createElement("div");
+            cell.className = "cell";
+            if (map[y][x] === 1) cell.classList.add("wall");
+            else if (pacman1.x === x && pacman1.y === y && pacman1.alive)
+              cell.classList.add("pacman1");
+            else if (pacman2.x === x && pacman2.y === y && pacman2.alive)
+              cell.classList.add("pacman2");
+            else if (ghost.x === x && ghost.y === y)
+              cell.classList.add("ghost");
+            else if (map[y][x] === 0) cell.classList.add("dot");
+            else cell.classList.add("empty");
+            game.appendChild(cell);
+          }
+        }
+      }
+
+      function movePlayer(p) {
+        if (!p.alive) return;
+        let nx = p.x + p.dx;
+        let ny = p.y + p.dy;
+        if (map[ny]?.[nx] !== 1) {
+          p.x = nx;
+          p.y = ny;
+          if (map[ny][nx] === 0) {
+            p.score += 10;
+            map[ny][nx] = 2;
+          }
+        }
+      }
+
+      function update() {
+        movePlayer(pacman1);
+        movePlayer(pacman2);
+        moveGhost();
+
+        if (pacman1.x === ghost.x && pacman1.y === ghost.y)
+          pacman1.alive = false;
+        if (pacman2.x === ghost.x && pacman2.y === ghost.y)
+          pacman2.alive = false;
+
+        document.getElementById("score1").textContent =
+          `${pacman1.name}: ${pacman1.score}${!pacman1.alive ? " ❌" : ""}`;
+        document.getElementById("score2").textContent =
+          `${pacman2.name}: ${pacman2.score}${!pacman2.alive ? " ❌" : ""}`;
+
+        let allDotsCollected = map.flat().every((cell) => cell !== 0);
+        if ((!pacman1.alive && !pacman2.alive) || allDotsCollected) {
+          endGame();
+        }
+
+        drawMap();
+      }
+
+      function moveGhost() {
+        let targets = [pacman1, pacman2].filter((p) => p.alive);
+        if (targets.length === 0) return;
+        let nearest = targets.sort(
+          (a, b) => dist(ghost, a) - dist(ghost, b),
+        )[0];
+        let dx = Math.sign(nearest.x - ghost.x);
+        let dy = Math.sign(nearest.y - ghost.y);
+        if (Math.random() > 0.5 && map[ghost.y + dy]?.[ghost.x] !== 1)
+          ghost.y += dy;
+        else if (map[ghost.y]?.[ghost.x + dx] !== 1) ghost.x += dx;
+      }
+
+      function dist(a, b) {
+        return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+      }
+
+      function setDir1(dx, dy) {
+        pacman1.dx = dx;
+        pacman1.dy = dy;
+      }
+      function setDir2(dx, dy) {
+        pacman2.dx = dx;
+        pacman2.dy = dy;
+      }
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowUp") setDir1(0, -1);
+        if (e.key === "ArrowDown") setDir1(0, 1);
+        if (e.key === "ArrowLeft") setDir1(-1, 0);
+        if (e.key === "ArrowRight") setDir1(1, 0);
+        if (e.key === "w") setDir2(0, -1);
+        if (e.key === "s") setDir2(0, 1);
+        if (e.key === "a") setDir2(-1, 0);
+        if (e.key === "d") setDir2(1, 0);
+      });
+    </script>
+  </body>
+</html>
