@@ -501,6 +501,21 @@
         font-size: 24px;
         font-weight: bold;
       }
+      #arenko {
+        display: flex;
+        align-items: center;
+        gap: 10px; /* Adjust spacing between text and logo */
+        font-family: "Courier New", monospace;
+        color: #00ffe7;
+        font-size: 16px; /* Adjust text size if needed */
+        margin-bottom: 20px;
+      }
+
+      #arenko-logo {
+        height: 1em; /* Matches the height of the text */
+        width: auto;
+        vertical-align: middle;
+      }
 
       #intro-screen {
         position: fixed;
@@ -563,6 +578,10 @@
   </head>
   <body>
     <div id="intro-screen">
+      <div id="arenko">
+        Developed by Arenko
+        <img src="arenko.png" alt="Arenko Logo" id="arenko-logo" />
+      </div>
       <img
         src="guardians-logo.png"
         alt="Guardians of the Grid"
